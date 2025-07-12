@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-)y!s8$n5%46ai6i_x%o=o61u35ldz1pspi(qio_563y$gt-=i6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['otquiz-production.up.railway.app', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
