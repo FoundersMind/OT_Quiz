@@ -1,0 +1,51 @@
+<form method="post"
+      id="quiz-form"
+      hx-post="{% url 'quiz_view' quiz.id page %}"
+      hx-target="#question-container"
+      hx-swap="outerHTML">
+
+    {% csrf_token %}
+    <input type="hidden" name="page" value="{{ page }}" id="current-page">
+
+    {% for field in form %}
+        <div class="mb-4">
+            <label class="fw-bold fs-5 mb-3 d-block">{{ field.label }}</label>
+            {% for radio in field %}
+                <div class="form-check mb-2 p-3 border rounded-3 option-box">
+                    {{ radio.tag }}
+                    <label class="form-check-label ms-2">{{ radio.choice_label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between">
+        {% if has_previous %}
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    onclick="goToPage({{ previous_page_number }})">Previous</button>
+        {% else %}
+            <div></div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">
+            {% if has_next %}Next{% else %}Submit{% endif %}
+        </button>
+    </div>
+</form>
+
+
+<script>
+   function goToPage(pageNumber) {
+    const form = document.getElementById('quiz-form');
+    const quizId = "{{ quiz.id }}";
+
+    // 👇 Update HTMX post URL to new page
+    form.setAttribute("hx-post", `/quiz/${quizId}/page/${pageNumber}/`);
+    document.getElementById('current-page').value = pageNumber;
+
+    // 👇 Let HTMX handle the request
+    htmx.trigger(form, "submit");
+}
+
+</script>

@@ -1,0 +1,28 @@
+<!-- templates/partials/sidebar.html -->
+<div class="bg-light border-end px-3 py-4" style="width: 240px;">
+    <h4 class="fw-bold mb-4 text-primary">OpenText Quiz</h4>
+    <ul class="nav flex-column gap-2">
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == '/' %}active fw-bold{% endif %}" href="{% url 'home' %}">🏠 Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == '/quizzes/' %}active fw-bold{% endif %}" href="{% url 'quiz_list' %}">🧠 Quizzes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == '/leaderboard/' %}active fw-bold{% endif %}" href="{% url 'leaderboard' %}">🏆 Leaderboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == '/upcoming-quizzes/' %}active fw-bold{% endif %}" href="{% url 'upcoming_quizzes' %}">📅 Upcoming Quizzes</a>
+        </li>
+       <li class="nav-item">
+    <a class="nav-link" href="{% url 'instructions' %}">📋 Instructions</a>
+</li>
+
+        <li class="nav-item">
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="nav-link btn btn-link">🚪 Logout</button>
+            </form>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-2 position-relative">
+
+    <!-- 🔹 Timer & Exit Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+        <div id="quiz-timer" class="fs-5 fw-bold text-danger"></div>
+        <form method="post" action="{% url 'quiz_exit' quiz.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">Exit Quiz</button>
+        </form>
+    </div>
+
+    <!-- 🔹 HTMX Question Container -->
+    <div class="card p-2 shadow-lg rounded-4 mb-5" id="question-container" hx-target="this" hx-swap="outerHTML">
+        {% include 'question_partial.html' %}
+    </div>
+
+</div>
+<!-- 🔹 Countdown Timer Script -->
+<!-- 🔹 Countdown Timer Script -->
+<script>
+    const QUIZ_KEY = `quiz_timer_{{ quiz.id }}_{{ user_email|default:"unknown" }}`;
+    const RESET_FLAG_KEY = `quiz_reset_flag_{{ quiz.id }}_{{ user_email|default:"unknown" }}`;
+    const totalSeconds = {{ quiz.duration_minutes|default:10|add:0 }} * 60;
+    const shouldReset = {{ reset_timer|yesno:"true,false" }};
+    const timerEl = document.getElementById("quiz-timer");
+
+    // ⏱️ Setup start time only if not already stored or if explicitly reset
+    if ((shouldReset && !sessionStorage.getItem(RESET_FLAG_KEY)) || !sessionStorage.getItem(QUIZ_KEY)) {
+        sessionStorage.setItem(QUIZ_KEY, Date.now());
+        sessionStorage.setItem(RESET_FLAG_KEY, "1");
+    }
+
+    const startTime = parseInt(sessionStorage.getItem(QUIZ_KEY));
+    const endTime = startTime + totalSeconds * 1000;
+
+    const countdown = setInterval(() => {
+        const now = Date.now();
+        const timeLeft = Math.floor((endTime - now) / 1000); // in seconds
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerEl.textContent = "Time Remaining: 0:00";
+            alert("Time is up! Submitting your quiz...");
+
+            const form = document.querySelector("#question-container form");
+            if (form) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'auto_submit';
+                hidden.value = '1';
+                form.appendChild(hidden);
+                form.submit();
+
+                setTimeout(() => {
+                    window.location.href = "{% url 'quiz_result' quiz.id %}";
+                }, 2000);
+            }
+
+            return;
+        }
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerEl.textContent = `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+</script>
+
+
+
+{% endblock %}

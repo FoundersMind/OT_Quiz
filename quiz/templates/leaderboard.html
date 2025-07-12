@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex" style="min-height: 100vh;">
+
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 px-4 py-4">
+        <h2 class="text-center mb-4">🏆 Overall Leaderboard</h2>
+
+        <div class="row justify-content-center mb-5">
+            {% for user in top_users|slice:":5" %}
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center shadow-lg border-0">
+                        <div class="card-body">
+                            {% if forloop.counter == 1 %}
+                                <h1 class="display-4">🥇</h1>
+                            {% elif forloop.counter == 2 %}
+                                <h1 class="display-4">🥈</h1>
+                            {% elif forloop.counter == 3 %}
+                                <h1 class="display-4">🥉</h1>
+                            {% endif %}
+                            <h5 class="card-title fw-bold">{{ user.name }}</h5>
+                            <p class="card-text">Total Score: {{ user.total_score }}</p>
+                            <p class="text-muted">Quizzes Taken: {{ user.total_quizzes }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h4 class="mb-3">Score Comparison</h4>
+        <div class="bg-white p-4 rounded shadow">
+            <canvas id="scoreChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for user in top_users|slice:":5" %}'{{ user.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Total Score',
+                data: [{% for user in top_users|slice:":5" %}{{ user.total_score }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                    '#FFD700', // gold
+                    '#C0C0C0', // silver
+                    '#CD7F32', // bronze
+                    ...Array(2).fill('#007bff') // blue for 4th and 5th
+                ],
+                borderRadius: 10,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Score: ${context.parsed.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

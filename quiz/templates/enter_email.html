@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<!-- ✅ Centered content wrapper -->
+<div style="
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   
+">
+
+    <!-- ✅ Page title -->
+    <h2 class="mb-4 text-center" style="color: #003366; font-weight: 600;">
+        OpenText Quiz Portal
+    </h2>
+
+    <!-- ✅ Card -->
+    <div class="card p-4 shadow rounded-4" style="
+        width: 100%;
+        max-width: 500px;
+        background-color: #ffffff;
+        color: #212529;
+    ">
+        <h5 class="mb-3 text-center">Enter Your Details to Begin</h5>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+              
+                {{ form.name|add_class:"form-control text-dark bg-white" }}
+                {% if form.name.errors %}
+                    <div class="text-danger">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+               
+                {{ form.email|add_class:"form-control text-dark bg-white" }}
+                {% if form.email.errors %}
+                    <div class="text-danger">{{ form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary w-100">Enter Quiz Arena</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

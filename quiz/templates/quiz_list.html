@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load get_item %}
+
+{% block content %}
+<div class="d-flex" style="min-height: 100vh;">
+    
+    {% include "sidebar.html" %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 px-4 py-4">
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="mb-0 me-3 fw-semibold text-primary">Available Quizzes</h2>
+            <span class="badge bg-info text-dark px-3 py-2 mt-2 rounded-pill">Live</span>
+        </div>
+
+        <div class="row gx-4 gy-4">
+            {% for quiz in quizzes %}
+                <div class="col-12 col-md-4 d-flex">
+                    <div class="card h-100 w-100 card-quiz" style="min-height: 260px;">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title">{{ quiz.title }}</h5>
+                                <p class="card-text text-muted">Test your skills in this quiz.</p>
+                            </div>
+
+                            {% if quiz.is_locked %}
+                                <div class="mt-3">
+                                    <p class="text-danger mb-2">
+                                        <i class="bi bi-lock-fill"></i> This quiz is currently locked
+                                    </p>
+                                    <button class="btn btn-secondary w-100" disabled>Locked</button>
+                                </div>
+                            {% else %}
+                                {% with quiz_access_map|get_item:quiz.id as access %}
+                                    {% if access.has_exited or access.has_submitted %}
+                                        <div class="mt-3">
+                                            <p class="text-danger mb-2">
+                                                <i class="bi bi-lock-fill"></i> You have already taken this quiz
+                                            </p>
+                                            <button class="btn btn-secondary w-100 mb-2" disabled>Locked</button>
+
+                                            {% if quiz.show_leaderboard %}
+                                                <a href="{% url 'quiz_leaderboard' quiz.id %}" class="btn btn-outline-success w-100">
+                                                    View Leaderboard
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <a href="{% url 'quiz_loading' quiz.id %}" class="btn btn-primary mt-3 w-100">
+                                            Start Quiz
+                                        </a>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No quizzes available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

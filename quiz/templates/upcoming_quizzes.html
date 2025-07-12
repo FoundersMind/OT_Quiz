@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex" style="min-height: 100vh;">
+
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 px-4 py-4">
+        <h2 class="text-center mb-4">📅 Upcoming Quizzes</h2>
+
+        {% if upcoming_quizzes %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for quiz in upcoming_quizzes %}
+                    <div class="col">
+                        <div class="card border-info shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ quiz.title }}</h5>
+                                {% if quiz.description %}
+                                    <p class="card-text">{{ quiz.description }}</p>
+                                {% endif %}
+                                <p class="text-muted">Scheduled for: {{ quiz.start_time|date:"D, M d Y H:i" }}</p>
+                                <span class="badge bg-warning text-dark">Upcoming</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">No upcoming quizzes at the moment.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex" style="min-height: 100vh;">
+
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 px-4 py-4">
+        <!-- 👋 Welcome -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Welcome, {{ user_name|default:"Employee" }} 👋</h2>
+            <p class="text-muted">Ready to challenge yourself and climb the leaderboard?</p>
+        </div>
+
+        <!-- 🎯 Featured Quiz -->
+        {% if featured_quiz %}
+        <div class="alert alert-info rounded-4 shadow-sm text-center mb-4">
+            <h5 class="mb-0">🎯 <strong>Quiz of the Day:</strong>
+               <a href="{% url 'quiz_view' featured_quiz.id 1 %}" class="text-decoration-none">
+
+                    {{ featured_quiz.title }}
+                </a>
+            </h5>
+        </div>
+        {% endif %}
+
+        <!-- 📊 Stats -->
+        <div class="row text-center mb-4">
+            <div class="col">
+                <div class="card border-0 shadow-sm rounded-3 p-3">
+                    <h4 class="fw-bold text-primary">{{ user_stats.quizzes_taken|default:0 }}</h4>
+                    <p class="mb-0 text-muted">Quizzes Taken</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-0 shadow-sm rounded-3 p-3">
+                    <h4 class="fw-bold text-success">{{ user_stats.total_score|default:0 }}</h4>
+                    <p class="mb-0 text-muted">Total Score</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-0 shadow-sm rounded-3 p-3">
+                    <h4 class="fw-bold text-warning">#{{ user_stats.rank|default:"--" }}</h4>
+                    <p class="mb-0 text-muted">Your Rank</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🏅 Top 3 Preview -->
+        {% if top_3_users %}
+        <div class="card shadow-sm rounded-4 p-3 mb-4">
+            <h5 class="mb-3 text-center">🏆 Top 3 Players</h5>
+            <ul class="list-group list-group-flush">
+                {% for user in top_3_users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        {% if forloop.counter == 1 %} 🥇 {% elif forloop.counter == 2 %} 🥈 {% elif forloop.counter == 3 %} 🥉 {% endif %}
+                        {{ user.name }}
+                    </span>
+                    <span class="fw-bold text-primary">{{ user.total_score }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- 🚀 Call to Action -->
+        <div class="text-center mt-4">
+            <a href="{% url 'quiz_list' %}" class="btn btn-primary btn-lg rounded-pill shadow">Take a Quiz Now!</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

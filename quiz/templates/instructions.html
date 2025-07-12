@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex" style="min-height: 100vh;">
+
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 px-4 py-5">
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4 fw-bold text-primary">📝 Quiz Instructions</h2>
+                <hr class="mb-4">
+
+                <ul class="list-group list-group-flush fs-5">
+                    <li class="list-group-item py-3">
+                        📧 <strong>Login using your Email ID only</strong> – No passwords required.
+                    </li>
+                    <li class="list-group-item py-3">
+                        ⏱️ <strong>Time-bound Quizzes</strong> – Each quiz has a specific time limit. A countdown timer will be shown.
+                    </li>
+                    <li class="list-group-item py-3">
+                        📍 <strong>One Question Per Page</strong> – Navigate using “Next” and “Previous” buttons.
+                    </li>
+                    <li class="list-group-item py-3">
+                        ✅ <strong>Auto-Submit Enabled</strong> – Your quiz will be submitted automatically when time runs out.
+                    </li>
+                    <li class="list-group-item py-3">
+                        🚫 <strong>Exit Quiz = No Re-entry</strong> – If you exit a quiz, you cannot retake it unless allowed by admin.
+                    </li>
+                    <li class="list-group-item py-3">
+                        🏆 <strong>Leaderboard</strong> – Top performers may appear on the leaderboard if enabled.
+                    </li>
+                    <li class="list-group-item py-3">
+                        📊 <strong>Quiz Results</strong> – Results are displayed immediately after submission.
+                    </li>
+                </ul>
+
+                <div class="alert alert-info mt-4 fs-6">
+                    ⚠️ <strong>Note:</strong> Once submitted, answers cannot be changed. Please read questions carefully.
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{% url 'quiz_list' %}" class="btn btn-lg btn-success rounded-pill px-5">
+                        🚀 Start Quiz
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

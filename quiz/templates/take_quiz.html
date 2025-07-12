@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2">
+    <!-- Header Row: Timer + Exit -->
+    <div class="d-flex justify-content-between align-items-center mb-1 px-2">
+        <!-- Timer Box -->
+       <div class="d-flex align-items-center gap-2">
+    <div class="border border-primary rounded bg-white fw-semibold text-primary text-center small d-flex justify-content-center align-items-center px-3 py-2" style="min-width: 150px; height: 40px;">
+        <span class="text-black me-1">Time Left:</span>
+        <span id="quiz-timer">--</span>
+    </div>
+</div>
+
+
+        <!-- Exit Button -->
+        <form method="post" action="{% url 'quiz_exit' quiz.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">Exit Quiz</button>
+        </form>
+    </div>
+
+    <!-- Question Card with extra bottom margin -->
+   <div class="card shadow-lg p-4 rounded-4 mb-5" style="min-height: 400px; margin-top:10px;">
+
+        <form method="post" id="quiz-form">
+            {% csrf_token %}
+            <input type="hidden" name="time_taken_seconds" id="time-taken">
+
+            <input type="hidden" name="current_page" value="{{ page }}">
+{% for item in form.question_data %}
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <label class="fw-bold fs-5 mb-2 d-block">
+                Question {{ page }} of {{ num_pages }}
+            </label>
+        </div>
+
+        <p class="fs-6 fw-semibold text-dark mb-3">{{ item.question.text }}</p>
+
+        <div class="d-flex flex-column gap-2">
+            {% for option in item.options %}
+                <div class="form-check p-3 border rounded option-box">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="{{ item.field_name }}"
+                           id="{{ item.field_name }}_{{ forloop.counter }}"
+                           value="{{ option.text }}">
+                    <label class="form-check-label ms-2" for="{{ item.field_name }}_{{ forloop.counter }}">
+                        {{ option.text }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+
+            <div class="d-flex justify-content-between mt-3">
+                {% if has_previous %}
+                    <button type="submit" name="previous" class="btn btn-outline-secondary">Previous</button>
+                {% else %}
+                    <div></div>
+                {% endif %}
+
+                {% if has_next %}
+                    <button type="submit" name="next" class="btn btn-primary">Next</button>
+                {% else %}
+                    <button type="submit" name="submit" class="btn btn-success">Submit</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Timer Script -->
+<script>
+let formSubmitted = false;
+
+const QUIZ_KEY = `quiz_timer_{{ quiz.id }}_{{ user_email|default:"unknown" }}`;
+const RESET_FLAG_KEY = `quiz_reset_flag_{{ quiz.id }}_{{ user_email|default:"unknown" }}`;
+const RESET_ID_KEY = `quiz_reset_id_{{ quiz.id }}_{{ user_email|default:"unknown" }}`;
+
+const currentResetId = "{{ reset_id|default:'' }}";
+const storedResetId = sessionStorage.getItem(RESET_ID_KEY);
+const totalSeconds = {{ quiz.duration_minutes|default:10|add:0 }} * 60;
+const timerEl = document.getElementById("quiz-timer");
+
+if (currentResetId && currentResetId !== storedResetId) {
+    sessionStorage.removeItem(QUIZ_KEY);
+    sessionStorage.removeItem(RESET_FLAG_KEY);
+    sessionStorage.setItem(RESET_ID_KEY, currentResetId);
+}
+
+if (!sessionStorage.getItem(QUIZ_KEY)) {
+    sessionStorage.setItem(QUIZ_KEY, Date.now());
+    sessionStorage.setItem(RESET_FLAG_KEY, "1");
+}
+
+const startTime = parseInt(sessionStorage.getItem(QUIZ_KEY));
+const endTime = startTime + totalSeconds * 1000;
+
+function renderTimeLeft(msLeft) {
+    const secondsLeft = Math.max(0, Math.floor(msLeft / 1000));
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = secondsLeft % 60;
+    timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Initial render
+renderTimeLeft(endTime - Date.now());
+// Countdown tick
+const countdown = setInterval(() => {
+    const now = Date.now();
+    const timeLeft = endTime - now;
+
+    if (timeLeft <= 0 && !formSubmitted) {
+        clearInterval(countdown);
+        timerEl.textContent = "0:00";
+
+        const form = document.querySelector("#quiz-form");
+        if (form) {
+            // ✅ Calculate elapsed time and set it in the hidden input
+            const elapsed = Math.floor((now - startTime) / 1000);
+            const timeTakenInput = document.getElementById("time-taken");
+            if (timeTakenInput) {
+                timeTakenInput.value = elapsed;
+            }
+
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'auto_submit';
+            hidden.value = '1';
+            form.appendChild(hidden);
+
+            formSubmitted = true;
+            form.submit();
+        }
+
+        setTimeout(() => {
+            if (!formSubmitted) {
+                window.location.href = "{% url 'quiz_result' quiz.id %}";
+            }
+        }, 3000);
+
+        return;
+    }
+
+    renderTimeLeft(timeLeft);
+}, 1000);
+document.getElementById("quiz-form").addEventListener("submit", function () {
+    if (!formSubmitted) {
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTime) / 1000); // seconds
+        const timeTakenInput = document.getElementById("time-taken");
+        if (timeTakenInput) {
+            timeTakenInput.value = elapsed;
+        }
+        formSubmitted = true;
+    }
+});
+
+</script>
+{% endblock %}

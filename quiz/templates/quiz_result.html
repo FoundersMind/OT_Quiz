@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Result</h2>
+<p>Score: {{ result.score }}</p>
+<p>Time Taken: {{ result.time_taken }}</p>
+<a href="{% url 'quiz_list' %}" class="btn btn-secondary">Back to Quizzes</a>
+{% endblock %}
