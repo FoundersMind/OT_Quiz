@@ -24,4 +24,5 @@ RUN python manage.py collectstatic --noinput
 COPY nginx/default.conf /etc/nginx/sites-available/default
 
 # Start both nginx and gunicorn
-CMD service nginx start && gunicorn quiz_project.wsgi:application --bind 0.0.0.0:8000
+CMD ["gunicorn", "quiz_project.wsgi:application", "--bind", "0.0.0.0:${PORT}"]
+
