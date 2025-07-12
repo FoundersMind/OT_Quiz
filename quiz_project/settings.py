@@ -126,6 +126,10 @@ USE_TZ = True
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+CSRF_TRUSTED_ORIGINS = [
+    'https://otquiz-production.up.railway.app',
+    # add other trusted domains if any
+]
 
 STATIC_URL = '/static/'
 
