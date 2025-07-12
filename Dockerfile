@@ -17,6 +17,10 @@ RUN apt-get update && \
 # Copy project files
 COPY . .
 
+# Make migrations and migrate (run at build time)
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
@@ -25,5 +29,5 @@ COPY nginx/default.conf /etc/nginx/sites-available/default
 
 EXPOSE 8080
 
-# Start both Nginx and Gunicorn via supervisord or bash script (optional), or keep Gunicorn only if Nginx is already handled externally
+# Start Gunicorn server
 CMD gunicorn quiz_project.wsgi:application --bind 0.0.0.0:$PORT
