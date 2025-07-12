@@ -23,7 +23,7 @@ RUN python manage.py collectstatic --noinput
 # Copy Nginx config
 COPY nginx/default.conf /etc/nginx/sites-available/default
 
-# Start both nginx and gunicorn
+EXPOSE 8080
+
+# Start both Nginx and Gunicorn via supervisord or bash script (optional), or keep Gunicorn only if Nginx is already handled externally
 CMD gunicorn quiz_project.wsgi:application --bind 0.0.0.0:$PORT
-
-
