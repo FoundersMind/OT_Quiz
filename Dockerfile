@@ -2,17 +2,17 @@ FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8080  
+ENV PORT=8080  # default fallback
 
 WORKDIR /app
 
-# Install Python dependencies
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Install Nginx
+# ✅ Install nginx + curl + envsubst (from gettext)
 RUN apt-get update && \
-    apt-get install -y nginx curl && \
+    apt-get install -y nginx curl gettext && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
@@ -23,15 +23,13 @@ RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 
-# Prepare nginx config (with dynamic port substitution)
+# ✅ Use envsubst to inject port into Nginx config
 RUN envsubst '$PORT' < nginx/default.conf > /etc/nginx/sites-available/default
 
-# Copy and allow execution of startup script
+# Start script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-# Expose port Railway uses
 EXPOSE ${PORT}
 
-# Start nginx and gunicorn
 CMD ["/app/start.sh"]
