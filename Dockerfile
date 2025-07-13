@@ -1,7 +1,7 @@
 FROM python:3.10-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -9,26 +9,24 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Install Nginx and clean up
+# Install Nginx
 RUN apt-get update && \
     apt-get install -y nginx && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy project files
+# Copy project files and configs
 COPY . .
+COPY nginx/default.conf /etc/nginx/sites-available/default
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
-# Make migrations and migrate (run at build time)
+# Django DB setup and collectstatic
 RUN python manage.py makemigrations
 RUN python manage.py migrate
-
-# Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Copy Nginx config
-COPY nginx/default.conf /etc/nginx/sites-available/default
-
+# Expose port (Railway expects 8080)
 EXPOSE 8080
 
-# Start Gunicorn server
-CMD gunicorn quiz_project.wsgi:application --bind 0.0.0.0:$PORT
-
+# Start Nginx and Gunicorn via script
+CMD ["/app/start.sh"]
