@@ -234,9 +234,10 @@ def quiz_view(request, quiz_id, page=1):
 
     # ✅ Standard flow
     if request.method == 'POST':
-        if form.is_valid():
+        if form.is_valid() or not form.cleaned_data:
             answer = form.cleaned_data.get(f"question_{question_obj.id}")
-            request.session[f"answer_q{question_obj.id}"] = answer
+            if answer:
+                request.session[f"answer_q{question_obj.id}"] = answer
 
             if 'submit' in request.POST:
                 if email:

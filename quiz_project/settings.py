@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['otquiz-production.up.railway.app', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
      "django_htmx",
       'nested_admin',
+      
 ]
 
 MIDDLEWARE = [
@@ -147,3 +149,17 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "OpenText Admin",
+    "site_header": "OpenText Quiz Portal",
+    "site_brand": "OpenText",
+    "welcome_sign": "Welcome to the OpenText Quiz Admin",
+    "copyright": "OpenText",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "related_modal_active": True,
+    "custom_css": None,  # You can link to your own CSS file
+    "custom_js": None,
+}
