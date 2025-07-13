@@ -82,18 +82,17 @@ WSGI_APPLICATION = 'quiz_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import os
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT'),
+        'NAME': 'railway',         # PGDATABASE
+        'USER': 'postgres',         # PGUSER
+        'PASSWORD': 'ehKTDOPBDHQdKtpkAUmdoTFdWHIabnYz', # PGPASSWORD
+        'HOST': 'postgres.railway.internal',         # PGHOST (e.g., "monorail.proxy.rlwy.net")
+        'PORT': '5432',         # PGPORT (usually 5432 or a Railway-provided port)
     }
 }
+
 
 
 
