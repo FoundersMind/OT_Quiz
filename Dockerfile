@@ -23,7 +23,7 @@ COPY . .
 
 # Run Django setup
 
-RUN python manage.py collectstatic --noinput
+
 
 
 # ✅ Use envsubst to inject port into Nginx config
