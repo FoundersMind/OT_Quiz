@@ -30,5 +30,5 @@ COPY nginx/default.conf /etc/nginx/sites-available/default
 EXPOSE 8080
 
 # Start Gunicorn server
-# CMD gunicorn quiz_project.wsgi:application --bind 0.0.0.0:$PORT
-CMD ["/bin/bash"]
+CMD gunicorn quiz_project.wsgi:application --bind 0.0.0.0:$PORT
+
