@@ -5,6 +5,9 @@ service nginx start
 # Apply Django migrations
 python manage.py makemigrations
 python manage.py migrate
+rm -rf /app/staticfiles/*
+
+
 python manage.py collectstatic --noinput
 python manage.py shell < create_superuser.py
 # Run Gunicorn on port 8000
