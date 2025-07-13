@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['otquiz-production.up.railway.app', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+     'quiz',
      'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'quiz',
+   
     'crispy_forms',         
     'crispy_bootstrap5',
     'widget_tweaks',
