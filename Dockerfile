@@ -19,9 +19,9 @@ RUN apt-get update && \
 COPY . .
 
 # Run Django setup
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+
 RUN python manage.py collectstatic --noinput
+
 
 # ✅ Use envsubst to inject port into Nginx config
 RUN envsubst '$PORT' < nginx/default.conf > /etc/nginx/sites-available/default
