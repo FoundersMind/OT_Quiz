@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['otquiz-production.up.railway.app', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'nested_admin',        # ✅ MOVE THIS UP
+          # ✅ MOVE THIS UP
     'quiz',
     'jazzmin',
     'django.contrib.admin',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'widget_tweaks',
     'django_htmx',
+     'nested_admin', 
 ]
 
 MIDDLEWARE = [
@@ -82,14 +83,20 @@ WSGI_APPLICATION = 'quiz_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'railway',         # PGDATABASE
+#         'USER': 'postgres',         # PGUSER
+#         'PASSWORD': 'ehKTDOPBDHQdKtpkAUmdoTFdWHIabnYz', # PGPASSWORD
+#         'HOST': 'postgres.railway.internal',         # PGHOST (e.g., "monorail.proxy.rlwy.net")
+#         'PORT': '5432',         # PGPORT (usually 5432 or a Railway-provided port)
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',         # PGDATABASE
-        'USER': 'postgres',         # PGUSER
-        'PASSWORD': 'ehKTDOPBDHQdKtpkAUmdoTFdWHIabnYz', # PGPASSWORD
-        'HOST': 'postgres.railway.internal',         # PGHOST (e.g., "monorail.proxy.rlwy.net")
-        'PORT': '5432',         # PGPORT (usually 5432 or a Railway-provided port)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -137,7 +144,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CSRF_TRUSTED_ORIGINS = [
     'https://otquiz-production.up.railway.app','http://localhost:8080',    'http://127.0.0.1:8080',
 
-    # add other trusted domains if any
+   
 ]
 
 STATIC_URL = '/static/'
