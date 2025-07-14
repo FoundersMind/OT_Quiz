@@ -135,7 +135,8 @@ USE_TZ = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CSRF_TRUSTED_ORIGINS = [
-    'https://otquiz-production.up.railway.app',
+    'https://otquiz-production.up.railway.app','http://localhost:8080',    'http://127.0.0.1:8080',
+
     # add other trusted domains if any
 ]
 
