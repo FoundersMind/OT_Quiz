@@ -1,7 +1,55 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h2>Your Result</h2>
-<p>Score: {{ result.score }}</p>
-<p>Time Taken: {{ result.time_taken }}</p>
-<a href="{% url 'quiz_list' %}" class="btn btn-secondary">Back to Quizzes</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-body text-center p-5">
+                    <h2 class="mb-4">Quiz Results</h2>
+
+                    <div class="mb-3">
+                        <h4>Score: {{ result.score }}</h4>
+                        <div class="progress my-3" style="height: 25px;">
+                            <div 
+                                class="progress-bar 
+                                    {% if result.score >= 80 %}bg-success
+                                    {% elif result.score >= 50 %}bg-warning
+                                    {% else %}bg-danger{% endif %}" 
+                                role="progressbar"
+                                style="width: {{ result.score }}%;"
+                                aria-valuenow="{{ result.score }}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                            >
+                                {{ result.score }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Time Taken: {{ result.time_taken }}</h5>
+                    </div>
+
+                    <div class="alert 
+                        {% if result.score >= 8 %}alert-success
+                        {% elif result.score >= 5 %}alert-warning
+                        {% else %}alert-danger{% endif %}" role="alert">
+                        {% if result.score >= 8 %}
+                            🌟 Excellent work! You're a quiz master.
+                        {% elif result.score >= 5 %}
+                            👍 Good effort! You’re almost there.
+                        {% else %}
+                            💪 Don’t worry! Practice makes perfect.
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'quiz_list' %}" class="btn btn-primary mt-3">
+                        Back to Quizzes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
